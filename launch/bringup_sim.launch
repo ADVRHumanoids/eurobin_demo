@@ -1,7 +1,13 @@
 <launch>
 
+    <arg name="verbose" default="false"/>
+
     <include file="$(find centauro_gazebo)/launch/centauro_world.launch">
         <arg name="realsense" value="true"/>
+    </include>
+
+    <include file="$(find eurobin_grasp_box)/launch/aruco_detect.launch">
+        <arg name="verbose" value="$(arg verbose)"/>
     </include>
 
     <node pkg="eurobin_grasp_box" type="xbot2.bash" name="xbot2"/>
