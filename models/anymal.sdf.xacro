@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<sdf xmlns:xacro="http://www.ros.org/wiki/xacro" version="1.6">
+
+  <xacro:arg name="mass" default="10.0" />
+  <xacro:arg name="l_x" default="0.40" />
+  <xacro:arg name="l_y" default="0.60" />
+  <xacro:arg name="l_z" default="0.60" />
+
+  <xacro:macro name="anymal" params="mass l_x l_y l_z">
+
+    <model name="anymal">
+      <link name="box">
+        <pose>0 0 ${l_z/2.0} 0 0 0</pose>
+        <inertial>
+          <mass>${mass}</mass>
+          <inertia>
+            <ixx>${1./12. * l_y**2 * l_z**2}</ixx>
+            <ixy>0.0</ixy>
+            <ixz>0.0</ixz>
+            <iyy>${1./12. * l_x**2 * l_z**2}</iyy>
+            <iyz>0.0</iyz>
+            <izz>${1./12. * l_x**2 * l_y**2}</izz>
+          </inertia>
+        </inertial>
+        <visual name="box_visual">
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>${l_x} ${l_y} ${l_z}</size>
+            </box>
+          </geometry>
+        </visual>
+        <collision name="box_collision">
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>${l_x} ${l_y} ${l_z}</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode>
+                <kp>1e6</kp>
+                <kd>1.0</kd>
+              </ode>
+            </contact>
+          </surface>
+        </collision>
+      </link>
+    </model>
+  </xacro:macro>
+
+  <xacro:anymal mass="$(arg mass)" l_x="$(arg l_x)" l_y="$(arg l_y)" l_z="$(arg l_z)"/>
+</sdf>

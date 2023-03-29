@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<sdf xmlns:xacro="http://www.ros.org/wiki/xacro" version="1.6">
+
+  <xacro:arg name="mass" default="0.5" />
+  <xacro:arg name="l_x" default="0.20" />
+  <xacro:arg name="l_y" default="0.30" />
+  <xacro:arg name="l_z" default="0.10" />
+
+  <xacro:macro name="aruco_box" params="mass l_x l_y l_z">
+
+    <model name="aruco_box">
+      <link name="box">
+        <pose>0 0 ${l_z/2.0} 0 0 0</pose>
+        <inertial>
+          <mass>${mass}</mass>
+          <inertia>
+            <ixx>${1./12. * l_y**2 * l_z**2}</ixx>
+            <ixy>0.0</ixy>
+            <ixz>0.0</ixz>
+            <iyy>${1./12. * l_x**2 * l_z**2}</iyy>
+            <iyz>0.0</iyz>
+            <izz>${1./12. * l_x**2 * l_y**2}</izz>
+          </inertia>
+        </inertial>
+        <visual name="box_visual">
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>${l_x} ${l_y} ${l_z}</size>
+            </box>
+          </geometry>
+        </visual>
+        <collision name="box_collision">
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>${l_x} ${l_y} ${l_z}</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode>
+                <kp>1e4</kp>
+                <kd>1.0</kd>
+              </ode>
+            </contact>
+          </surface>
+        </collision>
+      </link>
+
+      <link name="marker">
+        <pose>0 0 ${l_z} 0 -1.57 0</pose>
+        <inertial>
+          <pose>0 0 0 0 0 0</pose>
+          <mass>0.001</mass>
+          <inertia>
+            <ixx>3.7499999999999997e-06</ixx>
+            <ixy>0.0</ixy>
+            <ixz>0.0</ixz>
+            <iyy>1.8750008333333333e-06</iyy>
+            <iyz>0.0</iyz>
+            <izz>1.8750008333333333e-06</izz>
+          </inertia>
+        </inertial>
+        <visual name="front_visual">
+          <pose>0.00005 0 0 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.0001 0.15 0.15</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_marker/materials/scripts</uri>
+              <uri>model://aruco_marker/materials/textures</uri>
+              <name>Marker</name>
+            </script>
+          </material>
+        </visual>
+        <!-- Hide the marker from the back -->
+        <visual name="rear_visual">
+          <pose>-0.00005 0 0 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.0001 0.15 0.15</size>
+            </box>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.0001 0.15 0.15</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+
+      <joint name="box_to_marker" type="fixed">
+        <parent>box</parent>
+        <child>marker</child>
+
+      </joint>
+    </model>
+  </xacro:macro>
+
+  <xacro:aruco_box mass="$(arg mass)" l_x="$(arg l_x)" l_y="$(arg l_y)" l_z="$(arg l_z)"/>
+</sdf>
