@@ -13,7 +13,7 @@
 
     <node pkg="eurobin_grasp_box" type="xbot2.bash" name="xbot2"/>
 
-    <node pkg="eurobin_grasp_box" type="wait_plugin.py" name="do_homing" args="homing"/>
+    <node pkg="eurobin_grasp_box" type="homing.py" name="do_homing" args="3.0"/>
 
     <node pkg="eurobin_grasp_box" type="spawn_box.py" name="spawn_box"/>
 
