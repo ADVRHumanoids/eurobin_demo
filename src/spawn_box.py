@@ -5,12 +5,15 @@ import rospy
 from geometry_msgs.msg import Pose
 import rospkg
 
-rospack = rospkg.RosPack()
-
+# wait for gazebo's spawn sdf service
 spawn_model_client = rospy.ServiceProxy('/gazebo/spawn_sdf_model', SpawnModel)
 rospy.wait_for_service('/gazebo/spawn_sdf_model')
 rospy.sleep(1.0)
 
+# rospack util
+rospack = rospkg.RosPack()
+
+# define spawn pose and spawn anymal model
 initial_pose = Pose()
 initial_pose.orientation.w = 1
 
@@ -27,6 +30,8 @@ res = spawn_model_client(
 
 print(res)
 
+
+# define spawn pose and spawn aruco box
 initial_pose.position.x = 2
 initial_pose.position.z = 1
 
