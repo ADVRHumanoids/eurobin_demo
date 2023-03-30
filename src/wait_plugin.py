@@ -7,6 +7,7 @@ import sys
 
 rospy.init_node('run_plugin_node', anonymous=True)
 
+# plugin to start and wait for exit
 plugin = sys.argv[1]
 
 # subscribe to lifecycle events
@@ -18,19 +19,21 @@ def on_le_recv(msg: LifecycleEvent):
 
 sub = rospy.Subscriber(name='/xbotcore/lifecycle_events', data_class=LifecycleEvent, callback=on_le_recv, queue_size=100)
 
+# switch service
 srvname = f'/xbotcore/{plugin}/switch'
 
+# wait for it to exist
 rospy.loginfo(f'waiting for service {srvname}')
 switch = rospy.ServiceProxy(srvname, service_class=SetBool)
 rospy.wait_for_service(srvname)
 
 # call service
 rospy.loginfo('calling service..')
-
 res = switch(True)
 rospy.loginfo(res)
 rospy.loginfo('waiting for exit..')
 
+# wait for signal shutdown
 rospy.spin()
 
 
