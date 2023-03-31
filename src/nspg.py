@@ -32,7 +32,7 @@ class CentauroNSPG:
         cfg['solver_options'] = {'regularization': 1e-2}
 
         cfg['stack'] = [
-            list(links), ['postural']  # discard postural
+            list(links), ['postural']
         ]
 
         cfg['constraints'] = ['joint_limits']
