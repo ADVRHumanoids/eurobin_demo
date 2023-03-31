@@ -43,7 +43,7 @@ class Planner:
                                               tf_prefix='ci/')
 
         self.static_links = ['contact_1', 'contact_2', 'contact_3', 'contact_4']
-        self.dynamic_links = ['ball1', 'ball2']
+        self.dynamic_links = ['arm1_8', 'arm2_8']
         self.nspg = nspg.CentauroNSPG(self.model, self.dynamic_links, self.static_links)
 
         self.nspg.vc.planning_scene.addBox('anymal', [0.4, 0.6, 0.6], Affine3([1.0, 0.0, -0.4], [0., 0., 0., 1.]))
@@ -64,9 +64,6 @@ class Planner:
         self.qstart = qhome
         self.qgoal = []
 
-        # manifold
-        self.constr = manifold.make_constraint(self.model, self.static_links)
-
     def generate_start_pose(self):
         self.model.setJointPosition(self.qstart)
         self.model.update()
@@ -76,11 +73,6 @@ class Planner:
         self.nspg.set_references(links, poses)
         success = self.nspg.sample(5.)
         self.qgoal = self.model.getJointPosition()
-
-        if not self.__check_state_valid(self.qgoal):
-            error_color = [178. / 255., 0, 77. / 255., 0.5]
-            self.goal_viz.setRGBA(error_color)
-
         self.goal_viz.publishMarkers([])
         if not success:
             raise Exception('unable to find a goal configuration!')
@@ -88,13 +80,17 @@ class Planner:
 
 
     def plan(self, planner_type='RRTConnect', timeout=1.0, threshold=0.0):
+
+        # manifold
+        constr = manifold.make_constraint(self.model, self.static_links)
+
         planner_config = {
             'state_space': {'type': 'Atlas'}
         }
 
         # create planner
         planner = planning.OmplPlanner(
-            self.constr,
+            constr,
             self.qmin, self.qmax,
             yaml.dump(planner_config)
         )
@@ -175,23 +171,6 @@ class Planner:
                 solution_interp[i, j] = interpolators[i](dt * j)
 
         return solution_interp, [dt * j for j in range(nsamples)]
-
-    def __check_state_valid(self, q):
-        check = True
-
-        self.model.setJointPosition(q)
-        self.model.update()
-
-        if not self.nspg.vc.checkAll():
-            print(f'collision detected with link {self.nspg.vc.getCollidingLinks()}')
-            check = False
-
-        error = self.constr.function(q)
-        if np.linalg.norm(error) > 0.01:
-            print('configuration not on maninfold')
-            check = False
-
-        return check
 
 
 
