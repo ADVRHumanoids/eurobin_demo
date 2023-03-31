@@ -74,8 +74,8 @@
           </geometry>
           <material>
             <script>
-              <uri>model://aruco_marker/materials/scripts</uri>
-              <uri>model://aruco_marker/materials/textures</uri>
+              <uri>model://aruco_box/materials/scripts</uri>
+              <uri>model://aruco_box/materials/textures</uri>
               <name>Marker${aruco_id}</name>
             </script>
           </material>
