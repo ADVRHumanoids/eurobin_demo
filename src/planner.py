@@ -9,6 +9,7 @@ from xbot_interface import config_options as co
 
 import nspg
 import manifold
+import aruco_wrapper
 
 import numpy as np
 import scipy.linalg as la
@@ -49,6 +50,9 @@ class Planner:
         self.nspg.vc.planning_scene.addBox('anymal', [0.4, 0.6, 0.6], Affine3([1.0, 0.0, -0.4], [0., 0., 0., 1.]))
         self.nspg.vc.planning_scene.addBox('parcel', [0.2, 0.3, 0.1], Affine3([1.0, 0.0, -0.05], [0., 0., 0., 1.]))
         self.nspg.vc.planning_scene.startGetPlanningSceneServer()
+
+        # aruco wrapper
+        self.aruco = aruco_wrapper.ArucoWrapper(self.nspg.vc.planning_scene)
 
         # joint limits for the planner
         qmin, qmax = self.model.getJointLimits()
@@ -101,6 +105,9 @@ class Planner:
 
         ### TODO: add check for start and goal state w.r.t. the manifold
         planner.setStartAndGoalStates(self.qstart, self.qgoal, threshold)
+
+        # detect aruco and update planning scene
+        self.aruco.listen()
 
         def validity_predicate(q):
             self.model.setJointPosition(q)
