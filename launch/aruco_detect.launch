@@ -1,6 +1,6 @@
 <launch>
 
-    <arg name="camera" value="/D435_head_camera/color" />
+    <arg name="camera" value="???" />
     <arg name="image" value="image_raw" />
     <arg name="dictionary" value="0" />
     <arg name="fiducial_len" value="0.15" />

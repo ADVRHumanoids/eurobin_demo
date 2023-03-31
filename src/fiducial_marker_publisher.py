@@ -21,7 +21,7 @@ def on_fid_tf_array_recv(msg: FiducialTransformArray):
         
         # add geomsg publisher if needed
         if fid not in pubs.keys():
-            pubs[fid] = rospy.Publisher(f'fiducial_transforms/{fid}', PoseStamped, queue_size=1)
+            pubs[fid] = rospy.Publisher(f'/fiducial_transforms/{fid}', PoseStamped, queue_size=1)
         
         # publish pose
         psmsg = PoseStamped()
