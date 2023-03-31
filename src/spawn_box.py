@@ -15,14 +15,15 @@ rospack = rospkg.RosPack()
 
 # define spawn pose and spawn anymal model
 initial_pose = Pose()
-initial_pose.orientation.w = 1
+initial_pose.orientation.w = 0.707
+initial_pose.orientation.y = -0.707
 
-initial_pose.position.x = 2
+initial_pose.position.x = 2.2
 initial_pose.position.z = 0.31
 
 res = spawn_model_client(
     model_name='anymal',
-    model_xml=open(rospack.get_path('eurobin_grasp_box') + '/models/anymal.sdf', 'r').read(),
+    model_xml=open(rospack.get_path('eurobin_grasp_box') + '/models/aruco_box/anymal.sdf', 'r').read(),
     robot_namespace='/',
     initial_pose=initial_pose,
     reference_frame='world'
@@ -32,12 +33,14 @@ print(res)
 
 
 # define spawn pose and spawn aruco box
+initial_pose.orientation.w = 1
+initial_pose.orientation.y = 0
 initial_pose.position.x = 2
 initial_pose.position.z = 1
 
 res = spawn_model_client(
     model_name='aruco_box',
-    model_xml=open(rospack.get_path('eurobin_grasp_box') + '/models/aruco_marker/model.sdf', 'r').read(),
+    model_xml=open(rospack.get_path('eurobin_grasp_box') + '/models/aruco_box/parcel.sdf', 'r').read(),
     robot_namespace='/',
     initial_pose=initial_pose,
     reference_frame='world'

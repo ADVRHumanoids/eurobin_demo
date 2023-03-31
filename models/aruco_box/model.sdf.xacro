@@ -1,12 +1,13 @@
 <?xml version="1.0"?>
 <sdf xmlns:xacro="http://www.ros.org/wiki/xacro" version="1.6">
 
+  <xacro:arg name="aruco_id" default="0"/>
   <xacro:arg name="mass" default="0.5" />
   <xacro:arg name="l_x" default="0.20" />
   <xacro:arg name="l_y" default="0.30" />
   <xacro:arg name="l_z" default="0.10" />
 
-  <xacro:macro name="aruco_box" params="mass l_x l_y l_z">
+  <xacro:macro name="aruco_box" params="aruco_id mass l_x l_y l_z">
 
     <model name="aruco_box">
       <link name="box">
@@ -18,9 +19,11 @@
             <ixy>0.0</ixy>
             <ixz>0.0</ixz>
             <iyy>${1./12. * l_x**2 * l_z**2}</iyy>
-            <iyz>0.0</iyz>
+            <iyz>0.0</iyz> 
+
             <izz>${1./12. * l_x**2 * l_y**2}</izz>
           </inertia>
+
         </inertial>
         <visual name="box_visual">
           <pose>0 0 0 0 0 0</pose>
@@ -40,7 +43,7 @@
           <surface>
             <contact>
               <ode>
-                <kp>1e4</kp>
+                <kp>${1e5*mass}</kp>
                 <kd>1.0</kd>
               </ode>
             </contact>
@@ -73,7 +76,7 @@
             <script>
               <uri>model://aruco_marker/materials/scripts</uri>
               <uri>model://aruco_marker/materials/textures</uri>
-              <name>Marker</name>
+              <name>Marker${aruco_id}</name>
             </script>
           </material>
         </visual>
@@ -104,5 +107,5 @@
     </model>
   </xacro:macro>
 
-  <xacro:aruco_box mass="$(arg mass)" l_x="$(arg l_x)" l_y="$(arg l_y)" l_z="$(arg l_z)"/>
+  <xacro:aruco_box mass="$(arg mass)" aruco_id="$(arg aruco_id)" l_x="$(arg l_x)" l_y="$(arg l_y)" l_z="$(arg l_z)"/>
 </sdf>
