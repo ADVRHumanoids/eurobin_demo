@@ -43,7 +43,7 @@ class Planner:
                                               tf_prefix='ci/')
 
         self.static_links = ['wheel_1', 'wheel_2', 'wheel_3', 'wheel_4']
-        self.dynamic_links = ['ball1', 'ball2']
+        self.dynamic_links = ['arm1_8', 'arm2_8']
         self.nspg = nspg.CentauroNSPG(self.model, self.dynamic_links, self.static_links)
 
         self.nspg.vc.planning_scene.addBox('anymal', [0.4, 0.6, 0.6], Affine3([1.0, 0.0, -0.4], [0., 0., 0., 1.]))
