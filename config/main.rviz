@@ -1034,15 +1034,14 @@ Visualization Manager:
             Show Trail: false
         Robot Alpha: 1
         Show Robot Collision: false
-        Show Robot Visual: true
+        Show Robot Visual: false
       Value: true
     - Class: rviz/MarkerArray
       Enabled: true
       Marker Topic: /centauro/start
       Name: StartPose
       Namespaces:
-        collision: true
-        visual: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/MarkerArray
@@ -1050,8 +1049,7 @@ Visualization Manager:
       Marker Topic: /centauro/goal
       Name: GoalPose
       Namespaces:
-        collision: true
-        visual: true
+        {}
       Queue Size: 100
       Value: true
   Enabled: true

@@ -25,7 +25,14 @@ class Planner:
         opt.generate_jidmap()
         opt.set_bool_parameter('is_model_floating_base', True)
         opt.set_string_parameter('model_type', 'RBDL')
+        opt.set_string_parameter('framework', 'ROS')
         self.model = xbot.ModelInterface(opt)
+
+        try:
+            self.robot = xbot.RobotInterface(opt)
+        except:
+            self.robot = None
+            print('RobotInterface not created')
 
         qhome = self.model.getRobotState('home')
         self.model.setJointPosition(qhome)
@@ -150,6 +157,20 @@ class Planner:
                 self.model.update()
                 self.rspub.publishTransforms('planner')
                 rospy.sleep(dt)
+
+    def play_on_robot(self, solution, T):
+        if self.robot is None:
+            raise Exception('RobotInterface not available')
+        cin = input('send solution? (y/n)')
+        dt = T / solution.shape[1]
+        if cin == 'y':
+            for i in range(solution.shape[1]):
+                q = solution[6:, i]
+                self.robot.setPositionReference(q)
+                self.robot.move()
+                rospy.sleep(dt)
+
+
 
     def interpolate(self, solution, dt, max_qdot, max_qddot):
 

@@ -44,7 +44,7 @@ class CentauroNSPG:
         cfg['postural'] = {
             'name': 'postural',
             'type': 'Postural',
-            'lambda': 0.1
+            'lambda': 0.01
         }
 
         for c in links:
@@ -58,8 +58,11 @@ class CentauroNSPG:
 
     def _make_vc_context(self):
         _planner_config = dict()
-        _planner_config['state_validity_check'] = ['collisions']
+        _planner_config['state_validity_check'] = ['collisions', 'stability']
         _planner_config['collisions'] = {'type': 'CollisionCheck', 'include_environment': 'true'}
+        _planner_config['stability'] = {'type': 'ConvexHull',
+                                        'links': [f'contact_{i+1}' for i in range(4)],
+                                        'stability_margin': 0.05}
 
         vc_context = vc.ValidityCheckContext(yaml.dump(_planner_config), self.model)
         return vc_context

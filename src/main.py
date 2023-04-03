@@ -26,6 +26,7 @@ ee_goal = {
 pln.generate_goal_pose(list(ee_goal.keys()), list(ee_goal.values()))
 trj = pln.plan()
 trj_interp, time_vect = pln.interpolate(trj, 0.01, 1, 10)
-pln.play_on_rviz(trj, 10, time_vect[-1])
+pln.play_on_rviz(trj, 2, time_vect[-1])
+pln.play_on_robot(trj, 5)
 
 rospy.spin()
