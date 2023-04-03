@@ -36,20 +36,20 @@ class Planner:
         self.start_viz = visual_tools.RobotViz(self.model,
                                                '/centauro/start',
                                                color=[0, 0, 1, 0.5],
-                                               tf_prefix='ci/')
+                                               tf_prefix='planner/')
 
         self.goal_viz = visual_tools.RobotViz(self.model,
                                               '/centauro/goal',
                                               color=[0, 1, 0, 0.5],
-                                              tf_prefix='ci/')
+                                              tf_prefix='planner/')
 
         self.static_links = ['contact_1', 'contact_2', 'contact_3', 'contact_4']
         self.dynamic_links = ['arm1_8', 'arm2_8']
         self.nspg = nspg.CentauroNSPG(self.model, self.dynamic_links, self.static_links)
 
-        self.nspg.vc.planning_scene.addBox('anymal', [0.4, 0.6, 0.6], Affine3([1.0, 0.0, -0.4], [0., 0., 0., 1.]))
-        self.nspg.vc.planning_scene.addBox('parcel', [0.2, 0.3, 0.1], Affine3([1.0, 0.0, -0.05], [0., 0., 0., 1.]))
-        self.nspg.vc.planning_scene.startGetPlanningSceneServer()
+        # self.nspg.vc.planning_scene.addBox('anymal', [0.4, 0.6, 0.6], Affine3([1.0, 0.0, -0.4], [0., 0., 0., 1.]))
+        # self.nspg.vc.planning_scene.addBox('parcel', [0.2, 0.3, 0.1], Affine3([1.0, 0.0, -0.05], [0., 0., 0., 1.]))
+        # self.nspg.vc.planning_scene.startGetPlanningSceneServer()
 
         # aruco wrapper
         self.aruco = aruco_wrapper.ArucoWrapper(self.nspg.vc.planning_scene)
@@ -70,6 +70,9 @@ class Planner:
 
         # manifold
         self.constr = manifold.make_constraint(self.model, self.static_links)
+
+        # detect aruco and update planning scene
+        self.aruco.listen()
 
     def generate_start_pose(self):
         self.model.setJointPosition(self.qstart)
@@ -106,9 +109,6 @@ class Planner:
         ### TODO: add check for start and goal state w.r.t. the manifold
         planner.setStartAndGoalStates(self.qstart, self.qgoal, threshold)
 
-        # detect aruco and update planning scene
-        self.aruco.listen()
-
         def validity_predicate(q):
             self.model.setJointPosition(q)
             self.model.update()
@@ -137,7 +137,7 @@ class Planner:
                 q = solution[:, i]
                 self.model.setJointPosition(q)
                 self.model.update()
-                self.rspub.publishTransforms('ci')
+                self.rspub.publishTransforms('planner')
                 rospy.sleep(dt)
 
     def interpolate(self, solution, dt, max_qdot, max_qddot):
@@ -190,7 +190,7 @@ class Planner:
         self.model.update()
 
         if not self.nspg.vc.checkAll():
-            print(f'collision detected with link {self.nspg.vc.getCollidingLinks()}')
+            print(f'collision detected with link {self.nspg.vc.planning_scene.getCollidingLinks()}')
             check = False
 
         error = self.constr.function(q)
