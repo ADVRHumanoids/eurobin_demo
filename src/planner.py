@@ -80,7 +80,18 @@ class Planner:
         self.start_viz.publishMarkers([])
 
     def generate_goal_pose(self, links, poses):
-        self.nspg.set_references(links, poses)
+        # self.nspg.set_references(links, poses)
+        # retrieve parcel position (fiducial_0)
+        T_parcel = self.aruco.getArucoPose('/fiducial_0')
+        T_inv_left = T_parcel.inverse()
+        T_inv_left.translation[0] -= 0.15 + 0.1
+        arm1_8 = T_inv_left.inverse()
+        T_inv_right = T_parcel.inverse()
+        T_inv_right.translation[0] += 0.15 + 0.1
+        arm2_8 = T_inv_right.inverse()
+
+        self.nspg.set_references(['arm1_8', 'arm2_8'], [arm1_8, arm2_8])
+
         success = self.nspg.sample(5.)
         self.qgoal = self.model.getJointPosition()
 
