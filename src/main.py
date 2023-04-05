@@ -18,8 +18,6 @@ model_cfg = get_xbot_config(prefix='xbotcore/')
 planner_cfg_path = sys.argv[1]
 planner_cfg = yaml.safe_load(open(planner_cfg_path, 'r'))
 
-print(planner_cfg)
-
 # construct planner class
 pln = planner.Planner(model_cfg.get_urdf(), model_cfg.get_srdf(), planner_cfg)
 
@@ -30,7 +28,7 @@ pln.generate_start_pose()
 pln.generate_goal_pose()
 
 # plan
-trj, error = pln.plan(timeout=5.0)
+trj, error = pln.plan(timeout=10.0)
 
 if trj is None:
     exit(1)

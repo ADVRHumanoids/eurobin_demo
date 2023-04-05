@@ -10,12 +10,12 @@
       <inertial>
         <mass>0.5</mass>
         <inertia>
-          <ixx>0.00030000000000000003</ixx>
+          <ixx>0.005416666666666667</ixx>
           <ixy>0.0</ixy>
           <ixz>0.0</ixz>
-          <iyy>0.0001333333333333334</iyy>
+          <iyy>0.003333333333333334</iyy>
           <iyz>0.0</iyz>
-          <izz>0.00030000000000000003</izz>
+          <izz>0.005416666666666667</izz>
         </inertia>
       </inertial>
       <visual name="box_visual">

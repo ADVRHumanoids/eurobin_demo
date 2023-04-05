@@ -12,9 +12,6 @@ class ArucoWrapper:
         self.ps = planning_scene
         self.model = model
 
-        self.trans = []
-        self.rot = []
-
         self.__frame_dict = config['aruco_wrapper']['boxes']
         
         self.__grasp_dict = config['aruco_wrapper']['grasp']
@@ -27,26 +24,32 @@ class ArucoWrapper:
         for frame, prop in self.__frame_dict.items():
             size = prop['size']  # size wrt aruco frame
             center = prop['center']  # position of box center wrt aruco frame
-            try:
-                # listen tf from aruco to robot's base_link
-                self.listener.waitForTransform('/base_link', frame, rospy.Time(0), timeout=rospy.Duration(5.))
-                (trans, rot) = self.listener.lookupTransform('/base_link', frame, rospy.Time(0))
+            now = rospy.Time.now()
 
-                # save the aruco transform matrix in world frame
-                w_T_base = self.model.getPose('base_link')
-                w_T_aruco = w_T_base*Affine3(trans, rot)
+            while True:
+                try:
+                    # listen tf from aruco to robot's base_link
+                    print(f'waiting for transform ( base_link -> {frame} )')
+                    self.listener.waitForTransform('/base_link', frame, rospy.Time(), timeout=rospy.Duration(1.))
+                    (trans, rot) = self.listener.lookupTransform('/base_link', frame, rospy.Time())
+                    break
+                except:
+                    continue
 
-                w_center = w_T_aruco * center
-                w_T_box = w_T_aruco.copy()
-                w_T_box.translation = w_center
+            # save the aruco transform matrix in world frame
+            w_T_base = self.model.getPose('base_link')
+            w_T_aruco = w_T_base*Affine3(trans, rot)
+
+            w_center = w_T_aruco * center
+            w_T_box = w_T_aruco.copy()
+            w_T_box.translation = w_center
+        
+            self.__box_poses[frame] = w_T_box
+
+            # add to PlanningScene
+            self.ps.addBox(frame, size, w_T_box)
+            print(f'added box in pos {w_center}')
             
-                self.__box_poses[frame] = w_T_box
-
-                # add to PlanningScene
-                self.ps.addBox(frame, size, w_T_box)
-                print(f'added box in pos {trans}')
-            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-                continue
 
         for frame, props in self.__grasp_dict.items():
             base_frame = props['base_frame']

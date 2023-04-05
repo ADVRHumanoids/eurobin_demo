@@ -5,13 +5,17 @@ aruco_wrapper:
       center: [0, 0, -0.1]
 
     fiducial_1:
-      size: [0.6, 0.6, 0.4]
+      size: [1.2, 0.6, 0.4]
       center: [0, 0.20, -0.20]
 
   grasp:
     arm1_8: 
       base_frame: fiducial_0
-      offset: [0.35, 0, 0]
+      offset: [0.30, 0, 0.0]
     arm2_8: 
       base_frame: fiducial_0
-      offset: [-0.35, 0, 0]
+      offset: [-0.30, 0, 0.0]
+
+validity_check:
+  planning_scene:
+    padding: 0.03

@@ -1,5 +1,5 @@
 from cartesio_planning import planning
-from cartesio_planning import validity_check
+from cartesio_planning import validity_check as vc
 from cartesio_planning import visual_tools
 
 from cartesian_interface.pyci_all import *
@@ -18,6 +18,7 @@ import yaml
 import rospy
 
 class Planner:
+    
     def __init__(self, urdf, srdf, config):
 
         # create model interface
@@ -42,6 +43,17 @@ class Planner:
         self.model.setJointPosition(qhome)
         self.model.update()
 
+        # make validity check (static stability + planning scene collisions)
+        self.vc = self._make_vc_context()
+
+        # set padding from config
+        try:
+            padding = config['validity_check']['planning_scene']['padding']
+            self.vc.planning_scene.setPadding(padding)
+            print(f'set padding = {padding}')
+        except:
+            pass
+
         # marker array visualizers for start pose, goal pose, and plan
         self.start_viz = visual_tools.RobotViz(self.model,
                                                '/centauro/start',
@@ -65,7 +77,7 @@ class Planner:
         self.dynamic_links = ['arm1_8', 'arm2_8']
 
         # create the goal sampler
-        self.nspg = nspg.CentauroNSPG(self.model, self.dynamic_links, self.static_links)
+        self.nspg = nspg.CentauroNSPG(self.model, self.dynamic_links, self.static_links, self.vc)
 
         # aruco wrapper
         self.aruco = aruco_wrapper.ArucoWrapper(self.nspg.vc.planning_scene, self.model, config)
@@ -196,14 +208,10 @@ class Planner:
             seg_vels.append((solution[:, i + 1] - solution[:, i]) / tk)
             seg_durs.append(tk)
 
-        print(seg_durs)
-
         for i in range(len(seg_vels) - 1):
             acc_max = np.abs((seg_vels[i + 1] - seg_vels[i]) / seg_durs[i]).max()
             if acc_max > max_qddot:
                 seg_durs[i] *= acc_max / max_qddot * safety_factor
-
-        print(seg_durs)
 
         seg_durs.insert(0, 0)
 
@@ -222,6 +230,7 @@ class Planner:
                 solution_interp[i, j] = interpolators[i](dt * j)
 
         return solution_interp, [dt * j for j in range(nsamples)]
+    
 
     def __check_state_valid(self, q):
         check = True
@@ -235,11 +244,22 @@ class Planner:
 
         error = self.constr.function(q)
         if np.linalg.norm(error) > 0.01:
-            print('configuration not on maninfold')
+            print('configuration not on manifold')
             check = False
 
         return check
 
+
+    def _make_vc_context(self):
+        _planner_config = dict()
+        _planner_config['state_validity_check'] = ['collisions', 'stability']
+        _planner_config['collisions'] = {'type': 'CollisionCheck', 'include_environment': 'true'}
+        _planner_config['stability'] = {'type': 'ConvexHull',
+                                        'links': [f'contact_{i+1}' for i in range(4)],
+                                        'stability_margin': 0.05}
+
+        vc_context = vc.ValidityCheckContext(yaml.dump(_planner_config), self.model)
+        return vc_context
 
 
 
