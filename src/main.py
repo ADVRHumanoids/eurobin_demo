@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from cartesian_interface.pyci_all import *
 import cartesian_interface.roscpp_utils as roscpp
 
