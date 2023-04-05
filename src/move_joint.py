@@ -10,7 +10,8 @@ from std_srvs.srv import SetBool, Trigger
 rospy.init_node('move_joint_node')
 
 # get robot ifc
-cfg = get_xbot_config(prefix='xbotcore/')
+cfg = get_xbot_config(prefix='xbotcore')
+robot = xbot.RobotInterface(cfg)
 
 # enable ros ctrl and set filters
 ros_control = rospy.ServiceProxy('/xbotcore/ros_control/switch', SetBool)
@@ -25,14 +26,19 @@ enable_filter(True)
 set_filter_profile_safe()
 ros_control(True)
 
-robot = xbot.RobotInterface(cfg)
-q_tgt = robot.getRobotState('home')
-q_tgt[robot.getDofIndex('d435_head_joint')] = -0.73
-trj_time = float(sys.argv[1])
+jname = sys.argv[1]
+q_tgt = float(sys.argv[2])
+trj_time = float(sys.argv[3])
 
-robot.setControlMode(xbot.ControlMode.Position())
+robot.setControlMode(
+    {
+        jname: xbot.ControlMode.Position()
+    }
+)
 
-q_0 = robot.getPositionReference()
+q_ref = robot.getPositionReference()
+q_idx = robot.getDofIndex(jname)
+q_0 = q_ref[q_idx]
 
 time = 0
 dt = 0.01
@@ -41,7 +47,7 @@ rate = rospy.Rate(1./dt)
 while time <= trj_time:
     tau = time/trj_time
     alpha = ((6*tau - 15)*tau + 10)*tau*tau*tau
-    q_ref = (1-alpha)*q_0 + alpha*q_tgt
+    q_ref[q_idx] = (1-alpha)*q_0 + alpha*q_tgt
     robot.setPositionReference(q_ref)
     robot.move()
     time += dt

@@ -6,8 +6,10 @@
   <xacro:arg name="l_x" default="0.20" />
   <xacro:arg name="l_y" default="0.30" />
   <xacro:arg name="l_z" default="0.10" />
+  <xacro:arg name="aruco_x" default="0.0" />
+  <xacro:arg name="aruco_y" default="0.0" />
 
-  <xacro:macro name="aruco_box" params="aruco_id mass l_x l_y l_z">
+  <xacro:macro name="aruco_box" params="aruco_id mass l_x l_y l_z aruco_x aruco_y">
 
     <model name="aruco_box">
       <link name="box">
@@ -41,6 +43,12 @@
             </box>
           </geometry>
           <surface>
+            <friction>
+              <ode>
+                <mu>1.0</mu>
+                <mu2>1.0</mu2>
+              </ode>
+            </friction>
             <contact>
               <ode>
                 <kp>${1e5*mass}</kp>
@@ -52,7 +60,7 @@
       </link>
 
       <link name="marker">
-        <pose>0 0 ${l_z} 0 -1.57 0</pose>
+        <pose>${aruco_x} ${aruco_y} ${l_z + 0.001} 0 -1.57 0</pose>
         <inertial>
           <pose>0 0 0 0 0 0</pose>
           <mass>0.001</mass>
@@ -107,5 +115,13 @@
     </model>
   </xacro:macro>
 
-  <xacro:aruco_box mass="$(arg mass)" aruco_id="$(arg aruco_id)" l_x="$(arg l_x)" l_y="$(arg l_y)" l_z="$(arg l_z)"/>
+  <xacro:aruco_box 
+    mass="$(arg mass)" 
+    aruco_id="$(arg aruco_id)" 
+    l_x="$(arg l_x)" 
+    l_y="$(arg l_y)" 
+    l_z="$(arg l_z)"
+    aruco_x="$(arg aruco_x)" 
+    aruco_y="$(arg aruco_y)" 
+    />
 </sdf>

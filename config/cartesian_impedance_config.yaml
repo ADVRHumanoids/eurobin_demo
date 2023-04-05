@@ -1,0 +1,17 @@
+
+stack:
+- [arm1_8, arm2_8]
+
+arm1_8:
+    type: Interaction
+    distal_link: arm1_8
+    base_link: torso_2
+    stiffness: [500.0, 500.0, 500.0, 300.0, 300.0, 300.0] 
+    damping: [0.7, 0.7, 0.7, 0.7, 0.7, 0.7]
+    
+arm2_8:
+    type: Interaction
+    distal_link: arm2_8
+    base_link: torso_2
+    stiffness: [500.0, 500.0, 500.0, 300.0, 300.0, 300.0] 
+    damping: [0.7, 0.7, 0.7, 0.7, 0.7, 0.7]

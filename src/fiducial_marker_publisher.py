@@ -36,7 +36,7 @@ def on_fid_tf_array_recv(msg: FiducialTransformArray):
         tfmsg.child_frame_id = f'fiducial/{fid}'
         tfmsg.transform = ft.transform
 
-        tb.sendTransform(tfmsg)
+        # tb.sendTransform(tfmsg)
 
 # subscribe to detected fiducials
 sub = rospy.Subscriber('fiducial_transforms', FiducialTransformArray, on_fid_tf_array_recv, queue_size=1)

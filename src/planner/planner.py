@@ -7,9 +7,9 @@ from cartesian_interface.pyci_all import *
 from xbot_interface import xbot_interface as xbot
 from xbot_interface import config_options as co
 
-import nspg
-import manifold
-import aruco_wrapper
+from . import nspg 
+from . import manifold 
+from . import aruco_wrapper
 
 import numpy as np
 import scipy.linalg as la
@@ -18,7 +18,9 @@ import yaml
 import rospy
 
 class Planner:
-    def __init__(self, urdf, srdf):
+    def __init__(self, urdf, srdf, config):
+
+        # create model interface
         opt = co.ConfigOptions()
         opt.set_urdf(urdf)
         opt.set_srdf(srdf)
@@ -28,18 +30,19 @@ class Planner:
         opt.set_string_parameter('framework', 'ROS')
         self.model = xbot.ModelInterface(opt)
 
+        # if robot is available, connect to it
         try:
             self.robot = xbot.RobotInterface(opt)
         except:
             self.robot = None
             print('RobotInterface not created')
 
+        # the initial state is homing (TBD: actual robot state)
         qhome = self.model.getRobotState('home')
         self.model.setJointPosition(qhome)
         self.model.update()
 
-        self.rspub = pyci.RobotStatePublisher(self.model)
-
+        # marker array visualizers for start pose, goal pose, and plan
         self.start_viz = visual_tools.RobotViz(self.model,
                                                '/centauro/start',
                                                color=[0, 0, 1, 0.5],
@@ -49,25 +52,28 @@ class Planner:
                                               '/centauro/goal',
                                               color=[0, 1, 0, 0.5],
                                               tf_prefix='planner/')
+        
+        self.plan_viz = visual_tools.RobotViz(self.model,
+                                              '/centauro/plan',
+                                              color=[1, 1, 0.1, 0.5],
+                                              tf_prefix='planner/')
 
+        # links in contact
         self.static_links = ['contact_1', 'contact_2', 'contact_3', 'contact_4']
+
+        # moveable end effectors
         self.dynamic_links = ['arm1_8', 'arm2_8']
+
+        # create the goal sampler
         self.nspg = nspg.CentauroNSPG(self.model, self.dynamic_links, self.static_links)
 
-        # self.nspg.vc.planning_scene.addBox('anymal', [0.4, 0.6, 0.6], Affine3([1.0, 0.0, -0.4], [0., 0., 0., 1.]))
-        # self.nspg.vc.planning_scene.addBox('parcel', [0.2, 0.3, 0.1], Affine3([1.0, 0.0, -0.05], [0., 0., 0., 1.]))
-        # self.nspg.vc.planning_scene.startGetPlanningSceneServer()
-
         # aruco wrapper
-        self.aruco = aruco_wrapper.ArucoWrapper(self.nspg.vc.planning_scene)
+        self.aruco = aruco_wrapper.ArucoWrapper(self.nspg.vc.planning_scene, self.model, config)
 
-        # joint limits for the planner
+        # joint limits for the planner (clamped between -6 and 6 rad)
         qmin, qmax = self.model.getJointLimits()
-
-        qmin = np.full(self.model.getJointNum(), -6.0)
-        qmax = -qmin
-
-
+        qmin = np.maximum(qmin, -6.0)
+        qmax = np.minimum(qmax, 6.0)
         self.qmin = qmin
         self.qmax = qmax
 
@@ -75,31 +81,29 @@ class Planner:
         self.qstart = qhome
         self.qgoal = []
 
-        # manifold
+        # planner manifold
         self.constr = manifold.make_constraint(self.model, self.static_links)
 
         # detect aruco and update planning scene
         self.aruco.listen()
+
 
     def generate_start_pose(self):
         self.model.setJointPosition(self.qstart)
         self.model.update()
         self.start_viz.publishMarkers([])
 
-    def generate_goal_pose(self, links, poses):
-        # self.nspg.set_references(links, poses)
-        # retrieve parcel position (fiducial_0)
-        T_parcel = self.aruco.getArucoPose('/fiducial_0')
-        T_inv_left = T_parcel.inverse()
-        T_inv_left.translation[0] -= 0.15 + 0.1
-        arm1_8 = T_inv_left.inverse()
-        T_inv_right = T_parcel.inverse()
-        T_inv_right.translation[0] += 0.15 + 0.1
-        arm2_8 = T_inv_right.inverse()
 
-        self.nspg.set_references(['arm1_8', 'arm2_8'], [arm1_8, arm2_8])
+    def generate_goal_pose(self):
 
+        # set references to goal sampler from detected aruco boxes
+        self.nspg.set_references(self.dynamic_links, 
+                                 map(self.aruco.getGraspPose, self.dynamic_links))
+
+        # try to obtain a goal pose, timeout 5 secs
         success = self.nspg.sample(5.)
+        
+        # if not found, publish last attempt for debugging purposes
         self.qgoal = self.model.getJointPosition()
 
         if not self.__check_state_valid(self.qgoal):
@@ -107,17 +111,19 @@ class Planner:
             self.goal_viz.setRGBA(error_color)
 
         self.goal_viz.publishMarkers([])
+
         if not success:
             raise Exception('unable to find a goal configuration!')
 
 
 
     def plan(self, planner_type='RRTConnect', timeout=1.0, threshold=0.0):
+
+        # create planner
         planner_config = {
             'state_space': {'type': 'Atlas'}
         }
 
-        # create planner
         planner = planning.OmplPlanner(
             self.constr,
             self.qmin, self.qmax,
@@ -127,6 +133,7 @@ class Planner:
         ### TODO: add check for start and goal state w.r.t. the manifold
         planner.setStartAndGoalStates(self.qstart, self.qgoal, threshold)
 
+        # define state validator
         def validity_predicate(q):
             self.model.setJointPosition(q)
             self.model.update()
@@ -135,15 +142,15 @@ class Planner:
         planner.setStateValidityPredicate(validity_predicate)
         success = planner.solve(timeout, planner_type)
 
-        print('Planner output : {}'.format(success))
-
         if success:
             solution = np.array(planner.getSolutionPath()).transpose()
-            error = solution[:, -1] - np.array(self.qgoal)
-            print('Error is {} rad'.format(la.norm(error)))
-            return solution
+            error = la.norm(solution[:, -1] - np.array(self.qgoal), ord=np.inf)
+            print(f'Plan error is {error} rad')
+            return solution, error
         else:
-            return None
+            print(f'Plan failed')
+            return None, np.inf
+
 
     def play_on_rviz(self, solution, ntimes, duration):
 
@@ -155,21 +162,22 @@ class Planner:
                 q = solution[:, i]
                 self.model.setJointPosition(q)
                 self.model.update()
-                self.rspub.publishTransforms('planner')
+                self.plan_viz.publishMarkers([])
                 rospy.sleep(dt)
+
 
     def play_on_robot(self, solution, T):
         if self.robot is None:
             raise Exception('RobotInterface not available')
+        self.robot.setControlMode(xbot.ControlMode.Position())
         cin = input('send solution? (y/n)')
         dt = T / solution.shape[1]
-        if cin == 'y':
+        if cin.lower() == 'y':
             for i in range(solution.shape[1]):
                 q = solution[6:, i]
                 self.robot.setPositionReference(q)
                 self.robot.move()
                 rospy.sleep(dt)
-
 
 
     def interpolate(self, solution, dt, max_qdot, max_qddot):

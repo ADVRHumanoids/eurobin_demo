@@ -31,11 +31,11 @@
 
     <node pkg="eurobin_grasp_box" type="spawn_box.py" name="spawn_box" />
 
-<!--     <node pkg="eurobin_grasp_box" ns="aruco_head" type="fiducial_marker_publisher.py" -->
-<!--         name="marker_pub_head" /> -->
+    <node pkg="eurobin_grasp_box" ns="aruco_head" type="fiducial_marker_publisher.py"
+        name="marker_pub_head" />
 
-<!--     <node pkg="eurobin_grasp_box" ns="aruco_base" type="fiducial_marker_publisher.py" -->
-<!--         name="marker_pub_base" /> -->
+    <node pkg="eurobin_grasp_box" ns="aruco_base" type="fiducial_marker_publisher.py"
+        name="marker_pub_base" />
 
     <node pkg="tf" type="static_transform_publisher" name="world_connecter" args="0 0 0 0 0 0 planner/world pelvis 30"/>
 

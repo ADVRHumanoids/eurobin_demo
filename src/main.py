@@ -1,32 +1,47 @@
-from cartesian_interface.pyci_all import Affine3
+from cartesian_interface.pyci_all import *
 import cartesian_interface.roscpp_utils as roscpp
 
-import planner
+from planner import planner
 import rospy
 import rospkg
+import sys
+import yaml
 
+# initialize rospy and roscpp
 rospy.init_node('planner_node')
 roscpp.init('planner_node', [])
-urdf_path = rospkg.RosPack().get_path('centauro_urdf') + '/urdf/centauro.urdf'
-urdf = open(urdf_path, 'r').read()
 
-srdf_path = rospkg.RosPack().get_path('centauro_srdf') + '/srdf/centauro.srdf'
-srdf = open(srdf_path, 'r').read()
+# get config object (contains urdf, srdf)
+model_cfg = get_xbot_config(prefix='xbotcore/')
 
-rospy.set_param('robot_description', urdf)
+# get parameters
+planner_cfg_path = sys.argv[1]
+planner_cfg = yaml.safe_load(open(planner_cfg_path, 'r'))
 
-pln = planner.Planner(urdf, srdf)
+print(planner_cfg)
+
+# construct planner class
+pln = planner.Planner(model_cfg.get_urdf(), model_cfg.get_srdf(), planner_cfg)
+
+# generate start pose (TBD from robot state)
 pln.generate_start_pose()
 
-# move the end effectors
-ee_goal = {
-    'arm1_8': Affine3([1., 0.25, -0.01], [0.706825, 0.0005629, 0.707388, 0.0005633]),
-    'arm2_8': Affine3([1., -0.25, -0.01], [0.706825, 0.0005629, 0.707388, 0.0005633])
-}
-pln.generate_goal_pose(list(ee_goal.keys()), list(ee_goal.values()))
-trj = pln.plan()
+# generate goal pose from detected aruco markers
+pln.generate_goal_pose()
+
+# plan
+trj, error = pln.plan(timeout=5.0)
+
+if trj is None:
+    exit(1)
+
+# failure
 trj_interp, time_vect = pln.interpolate(trj, 0.01, 1, 10)
+
+# run twice on rviz
 pln.play_on_rviz(trj, 2, time_vect[-1])
+
+# send to robot
 pln.play_on_robot(trj, 5)
 
 rospy.spin()
