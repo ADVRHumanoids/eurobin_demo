@@ -6,7 +6,7 @@ from cartesian_interface.pyci_all import Affine3
 
 import rospy, rospkg
 import trimesh
-import trimesh.registration
+from trimesh import util, registration 
 from sensor_msgs.msg import PointCloud2, PointField
 import sensor_msgs.point_cloud2 as pc2
 from std_msgs.msg import Header
@@ -18,12 +18,11 @@ import pyvista as pv
 
 class CameraCalibration:
     def __init__(self, urdf, srdf):
-        urdf_folder = rospkg.RosPack().get_path('centauro_urdf')
-        self.__mesh = trimesh.load(urdf_folder + '/meshes/BallHand.stl')
+        urdf_folder = rospkg.RosPack().get_path('dagana_urdf')
+        self.__mesh1 = trimesh.load(urdf_folder + '/meshes/dg0001-simplified.stl')
+        self.__mesh2 = trimesh.load(urdf_folder + '/meshes/dg0002.stl')
 
         self.goal = None
-
-
 
         opt = co.ConfigOptions()
         opt.set_urdf(urdf)
@@ -45,13 +44,13 @@ class CameraCalibration:
         time = 0.
         start = self.__robot.getJointPositionMap()
         goal = start.copy()
-        goal['j_arm1_1'] = -0.80
-        goal['j_arm1_2'] = 0.22
-        goal['j_arm1_3'] = -0.04
-        goal['j_arm1_4'] = -0.40
-        goal['j_arm1_5'] = 0.61
-        goal['j_arm1_6'] = -1.17
-        goal['d435_head_joint'] = -0.42
+        goal['j_arm2_1'] = -0.08
+        goal['j_arm2_2'] = -0.32
+        goal['j_arm2_3'] = 0.0
+        goal['j_arm2_4'] = -1.76
+        goal['j_arm2_5'] = -0.05
+        goal['j_arm2_6'] = -0.78
+        goal['d435_head_joint'] = -0.51
 
         while time < tf:
             self.__init_robot_position(tf=tf, time=time, start=start, goal=goal)
@@ -65,8 +64,7 @@ class CameraCalibration:
 
         self.__filtered_cloud = []
 
-        # rospy.Subscriber('D435_head_camera/depth/color/points', PointCloud2, self.__pc_callback, queue_size=10)
-        rospy.Subscriber('/D435i/D435i_camera_head/depth/color/points', PointCloud2, self.__pc_callback, queue_size=10)
+        rospy.Subscriber('D435_head_camera/depth/color/points', PointCloud2, self.__pc_callback, queue_size=10)
 
     def setXFilters(self, x_filt):
         if len(x_filt) != 2:
@@ -99,9 +97,19 @@ class CameraCalibration:
         self.__z_filt = z_filt
 
     def getTransformationMatrix(self, frame_id, topic_name):
-        T_init = self.__model.getPose('ball1', frame_id)
-        T_init.translation *= 1000
-        self.__mesh.apply_transform(T_init.matrix())
+        T_init1 = self.__model.getPose('dagana_2_top_link', 'D435_head_camera_depth_optical_frame')
+        T_init1.translation *= 1000
+        self.__mesh1.apply_transform(T_init1.matrix())
+
+        T_init2 = self.__model.getPose('dagana_2_bottom_link', 'D435_head_camera_depth_optical_frame')
+        T_init2.translation *= 1000
+        self.__mesh2.apply_transform(T_init2.matrix())
+
+        self.__mesh = trimesh.util.concatenate(self.__mesh1, self.__mesh2)
+
+        # T_init = self.__model.getPose('ball1', frame_id)
+        # T_init.translation *= 1000
+        # self.__mesh.apply_transform(T_init.matrix())
 
         # scale point cloud to match mesh size
         pointcloud = np.array(self.__filtered_cloud)
@@ -116,24 +124,24 @@ class CameraCalibration:
         plotter.add_mesh(pv.wrap(self.__mesh), color='white', opacity=0.5)
         plotter.add_mesh(pv.wrap(pointcloud), color='red', point_size=2)
         plotter.add_axes_at_origin(xlabel=None, ylabel=None, zlabel=None)
-        T, transformed, cost = trimesh.registration.icp(pointcloud, self.__mesh, scale=False)
-        print(T)
-        print(f'scale: {np.linalg.norm(T[:3, 0])}')
-        print(f'rot: {Rotation.from_matrix(T[:3,:3]/np.linalg.norm(T[:3, 0])).as_matrix}')
-        print(f'trans: {T[:3, 3]}')
+        # T, transformed, _ = trimesh.registration.icp(pointcloud, self.__mesh, scale=False)
+        # print(T)
+        # print(f'scale: {np.linalg.norm(T[:3, 0])}')
+        # print(f'rot: {Rotation.from_matrix(T[:3,:3]/np.linalg.norm(T[:3, 0])).as_matrix}')
+        # print(f'trans: {T[:3, 3]}')
 
-        trans = Affine3(T[:3, 3] * 0.001, Rotation.from_matrix(T[:3, :3]/np.linalg.norm(T[:3, 0])).as_quat())
+        # trans = Affine3(T[:3, 3] * 0.001, Rotation.from_matrix(T[:3, :3]/np.linalg.norm(T[:3, 0])).as_quat())
 
-        b_T_c = self.__model.getPose(frame_id, 'd435_head_motor')
-        b_trans = b_T_c.linear @ trans.translation
-        b_rot = b_T_c.linear @ trans.linear
+        # b_T_c = self.__model.getPose(frame_id, 'd435_head_motor')
+        # b_trans = b_T_c.linear @ trans.translation
+        # b_rot = b_T_c.linear @ trans.linear @ b_T_c.linear.T
 
-        print(f"offset in d435_head_motor frame: xyz = {b_trans}, rpy={Rotation.from_matrix(b_rot).as_euler('xyz').T}")
+        # print(f"offset in d435_head_motor frame: xyz = {b_trans}, rpy={Rotation.from_matrix(b_rot).as_euler('xyz').T}")
 
 
-        plotter.add_mesh(pv.wrap(transformed), color='green', point_size=2)
+        # plotter.add_mesh(pv.wrap(transformed), color='green', point_size=2)
         plotter.show()
-        self.__generate_pointcloud(frame_id, transformed, topic_name=topic_name)
+        # self.__generate_pointcloud(frame_id, transformed, topic_name=topic_name)
 
 
     def __init_robot_position(self, start, goal, time, tf):
@@ -194,10 +202,8 @@ class CameraCalibration:
             self.__filtered_cloud.append(p)
 
         self.__generate_pointcloud(msg.header.frame_id, self.__filtered_cloud, topic_name='filtered_cloud')
-        # self.__generate_pointcloud('D435_head_camera_color_optical_frame', self.__filtered_cloud, topic_name='filtered_cloud')
         print('cloud filtered')
         self.getTransformationMatrix(msg.header.frame_id, topic_name='aligned_cloud')
-        # self.getTransformationMatrix('D435_head_camera_color_optical_frame', topic_name='aligned_cloud')
         print('cloud_aligned')
 
 if __name__ == '__main__':
@@ -207,6 +213,6 @@ if __name__ == '__main__':
     srdf = rospy.get_param('xbotcore/robot_description_semantic')
 
     camera = CameraCalibration(urdf, srdf)
-    camera.setFilters([-0.2, 0.1], [-0.2, 0.12], [0., 1.2])
+    camera.setFilters([0.0, 0.2], [-0.2, 0.15], [0., 0.6])
 
     rospy.spin()
