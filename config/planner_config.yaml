@@ -5,8 +5,8 @@ aruco_wrapper:
       center: [0, 0, -0.1]
 
     fiducial_1:
-      size: [1.2, 0.6, 0.4]
-      center: [0, 0.20, -0.20]
+      size: [2.0, 0.76, 0.4]
+      center: [0, 0.30, -0.255]
 
   grasp:
     arm1_8: 
