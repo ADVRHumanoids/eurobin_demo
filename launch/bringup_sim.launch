@@ -5,13 +5,14 @@
 
     <include file="$(find centauro_gazebo)/launch/centauro_world.launch">
         <arg name="realsense" value="true" />
+        <arg name="end_effector_right" value="dagana" />
     </include>
 
     <include ns="aruco_head" file="$(find aruco_detect)/launch/aruco_detect.launch" pass_all_args="true">
         <arg name="camera" value="/D435_head_camera/color" />
         <arg name="image" value="image_raw" />
         <arg name="dictionary" value="0" />
-        <arg name="fiducial_len" value="0.15" />
+        <arg name="fiducial_len" value="0.10" />
         <arg name="do_pose_estimation" value="true" />
         <arg name="verbose" value="$(arg verbose)" />
     </include>
@@ -20,7 +21,7 @@
         <arg name="camera" value="/D435i_camera/color" />
         <arg name="image" value="image_raw" />
         <arg name="dictionary" value="0" />
-        <arg name="fiducial_len" value="0.15" />
+        <arg name="fiducial_len" value="0.10" />
         <arg name="do_pose_estimation" value="true" />
         <arg name="verbose" value="$(arg verbose)" />
     </include>
