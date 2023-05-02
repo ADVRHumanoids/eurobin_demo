@@ -1,5 +1,5 @@
 XBotInterface:
-  urdf_path: $(rospack find centauro_urdf)/urdf/centauro.urdf
+  urdf: xacro $(rospack find centauro_urdf)/urdf/centauro.urdf.xacro end_effector_right:=dagana
   srdf_path: $(rospack find centauro_srdf)/srdf/centauro.srdf
 
 ModelInterface:
@@ -19,21 +19,34 @@ xbotcore_threads:
     nrt_main: {sched: other, prio: 0 , period: 0.005}
 
 
+.ctrl_override: &ctrl_override
+  type: map<int>
+  value:
+    dagana_2_claw_joint: 0
+
 # plugins
 xbotcore_plugins:
 
     homing:
         thread: rt_main
         type: homing
+        params:
+          ctrl_override: *ctrl_override
 
     ros_io: {thread: nrt_main, type: ros_io}
 
-    ros_control: {thread: nrt_main, type: ros_control, params: {autostart: {type: bool, value: true}}}
+    ros_control: 
+      thread: nrt_main
+      type: ros_control
+      params: 
+        autostart: {type: bool, value: true}
+        ctrl_override: *ctrl_override
 
     cartesio: 
       thread: rt_main 
       type: albero_cartesio_rt
       params:
+        ctrl_override: *ctrl_override
         problem_description:
           value: $PWD/cartesian_impedance_config.yaml
           type: file
@@ -51,11 +64,9 @@ xbotcore_plugins:
 
 # global parameters
 xbotcore_param:
-    /jm/tx_filter_autostart: {value: true, type: bool}
-    /jm/tx_filter_cutoff: {value: 2.0, type: double}
-    /jm/enable_safety: {value: false, type: bool}
-    /xbot_internal/ros_io/call_timeout: {value: 1.0, type: chrono}
-    /rt_main/memory_hooks: {value: true, type: bool}
+  /xbot/hal/joint_safety/filter_autostart: {value: true, type: bool}
+  /xbot/hal/joint_safety/filter_cutoff_hz: {value: 2.0, type: double}
+  /xbot/hal/enable_safety: {value: true, type: bool}
 
 
 
