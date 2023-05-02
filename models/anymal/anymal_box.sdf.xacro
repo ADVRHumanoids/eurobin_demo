@@ -1,0 +1,172 @@
+<?xml version="1.0"?>
+<sdf xmlns:xacro="http://www.ros.org/wiki/xacro" version="1.6">
+
+    <xacro:arg name="aruco_id" default="0" />
+    <xacro:arg name="mass" default="0.5" />
+    <xacro:arg name="l_x" default="0.20" />
+    <xacro:arg name="l_y" default="0.30" />
+    <xacro:arg name="l_z" default="0.10" />
+    <xacro:arg name="aruco_x" default="0.0" />
+    <xacro:arg name="aruco_y" default="0.0" />
+
+    <xacro:macro name="anymal_box" params="aruco_id mass l_x l_y l_z aruco_x aruco_y">
+
+        <model name="anymal">
+            <link name="anymal">
+                <pose>0 0 ${l_z/2.0} 0 0 0</pose>
+                <inertial>
+                    <mass>${mass}</mass>
+                    <inertia>
+                        <ixx>${1./12. * mass * (l_y**2 + l_z**2)}</ixx>
+                        <ixy>0.0</ixy>
+                        <ixz>0.0</ixz>
+                        <iyy>${1./12. * mass * (l_x**2 + l_z**2)}</iyy>
+                        <iyz>0.0</iyz>
+                        <izz>${1./12. * mass * (l_x**2 + l_y**2)}</izz>
+                    </inertia>
+                </inertial>
+                <visual name="anymal_visual">
+                    <pose>0 0 0.20 0 0 0</pose>
+                    <geometry>
+                        <mesh>
+                            <uri>model://anymal/Anymal.stl</uri>
+                            <scale>0.01 0.01 0.01</scale>
+                        </mesh>
+                    </geometry>
+                </visual>
+                <collision name="anymal_collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>${l_x} ${l_y} ${l_z}</size>
+                        </box>
+                    </geometry>
+                    <surface>
+                        <friction>
+                            <ode>
+                                <mu>1.0</mu>
+                                <mu2>1.0</mu2>
+                            </ode>
+                        </friction>
+                        <contact>
+                            <ode>
+                                <kp>${1e5*mass}</kp>
+                                <kd>1.0</kd>
+                            </ode>
+                        </contact>
+                    </surface>
+                </collision>
+            </link>
+
+            <link name="box">
+                <pose>0 0 ${l_z/2.0} 0 0 0</pose>
+                <inertial>
+                    <mass>1.0</mass>
+                    <inertia>
+                        <ixx>${1./12. * 1.0 * (l_y**2 + l_z**2)}</ixx>
+                        <ixy>0.0</ixy>
+                        <ixz>0.0</ixz>
+                        <iyy>${1./12. * 1.0 * (l_x**2 + l_z**2)}</iyy>
+                        <iyz>0.0</iyz>
+                        <izz>${1./12. * 1.0 * (l_x**2 + l_y**2)}</izz>
+                    </inertia>
+                </inertial>
+                <visual name="box_visual">
+                    <pose>0 0 0.40 0 0 0</pose>
+                    <geometry>
+                        <mesh>
+                            <uri>model://anymal/AnymalBox.stl</uri>
+                            <scale>0.01 0.01 0.01</scale>
+                        </mesh>
+                    </geometry>
+                </visual>
+                <collision name="box_collision">
+                    <pose>0 0 0.40 0 0 0</pose>
+                    <geometry>
+                        <mesh>
+                            <uri>model://anymal/AnymalBox.stl</uri>
+                            <scale>0.01 0.01 0.01</scale>
+                        </mesh>
+                    </geometry>
+                    <surface>
+                        <friction>
+                            <ode>
+                                <mu>1.0</mu>
+                                <mu2>1.0</mu2>
+                            </ode>
+                        </friction>
+                        <contact>
+                            <ode>
+                                <kp>${1e5*mass}</kp>
+                                <kd>1.0</kd>
+                            </ode>
+                        </contact>
+                    </surface>
+                </collision>
+            </link>
+
+            <ignorelink name="marker">
+                <pose>${aruco_x} ${aruco_y} ${l_z + 0.001} 0 -1.57 0</pose>
+                <inertial>
+                    <pose>0 0 0 0 0 0</pose>
+                    <mass>0.001</mass>
+                    <inertia>
+                        <ixx>3.7499999999999997e-06</ixx>
+                        <ixy>0.0</ixy>
+                        <ixz>0.0</ixz>
+                        <iyy>1.8750008333333333e-06</iyy>
+                        <iyz>0.0</iyz>
+                        <izz>1.8750008333333333e-06</izz>
+                    </inertia>
+                </inertial>
+                <visual name="front_visual">
+                    <pose>0.00005 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.0001 0.15 0.15</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <script>
+                            <uri>model://aruco_box/materials/scripts</uri>
+                            <uri>model://aruco_box/materials/textures</uri>
+                            <name>Marker${aruco_id}</name>
+                        </script>
+                    </material>
+                </visual>
+                <!-- Hide the marker from the back -->
+                <visual name="rear_visual">
+                    <pose>-0.00005 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.0001 0.15 0.15</size>
+                        </box>
+                    </geometry>
+                </visual>
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.0001 0.15 0.15</size>
+                        </box>
+                    </geometry>
+                </collision>
+            </ignorelink>
+
+            <joint name="box_to_marker" type="fixed">
+                <parent>anymal</parent>
+                <child>box</child>
+            </joint>
+        </model>
+    </xacro:macro>
+
+    <xacro:anymal_box
+        mass="$(arg mass)"
+        aruco_id="$(arg aruco_id)"
+        l_x="$(arg l_x)"
+        l_y="$(arg l_y)"
+        l_z="$(arg l_z)"
+        aruco_x="$(arg aruco_x)"
+        aruco_y="$(arg aruco_y)"
+    />
+</sdf>
