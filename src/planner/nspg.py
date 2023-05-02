@@ -28,16 +28,21 @@ class CentauroNSPG:
         # write cartesio config
         cfg = dict()
 
-        cfg['solver_options'] = {'regularization': 1e-2}
+        cfg['solver_options'] = {'regularization': 1e-1}
 
         cfg['stack'] = [
             list(links), ['postural']
         ]
 
-        cfg['constraints'] = ['joint_limits']
+        cfg['constraints'] = ['joint_limits', 'velocity_limits']
 
         cfg['joint_limits'] = {
             'type': 'JointLimits'
+        }
+
+        cfg['velocity_limits'] = {
+            'type': 'VelocityLimits',
+            'limits': 1.0
         }
 
         cfg['postural'] = {
@@ -49,11 +54,16 @@ class CentauroNSPG:
         for c in links:
             cfg[c] = {
                 'type': 'Cartesian',
-                'indices': [0, 1, 2],
+                'indices': [0, 1, 2, 3, 4, 5],
                 'distal_link': c
             }
 
-        return yaml.dump(cfg)
+        cfg['base'] = {
+                'type': 'Cartesian',
+                'indices': [3, 4, 5],
+                'distal_link': 'base_link',
+                'weight': 1.0
+            }
 
         return yaml.dump(cfg)
 
