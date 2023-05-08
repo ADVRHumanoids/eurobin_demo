@@ -23,9 +23,6 @@ planner_cfg = yaml.safe_load(open(planner_cfg_path, 'r'))
 # construct planner class
 pln = planner.Planner(model_cfg.get_urdf(), model_cfg.get_srdf(), planner_cfg)
 
-# generate start pose (TBD from robot state)
-pln.generate_start_pose()
-
 # generate goal pose from detected aruco markers
 pln.generate_goal_pose()
 

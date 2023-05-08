@@ -53,11 +53,15 @@ class ArucoWrapper:
 
         for frame, props in self.__grasp_dict.items():
             base_frame = props['base_frame']
-            offset = props['offset']
+            offset_pos = props['offset']['pos']
+            offset_rot = props['offset'].get('rot', [0, 0, 0, 1])
+            box_T_grasp = Affine3(offset_pos, offset_rot)
+            
             w_T_box = self.getBoxPose(base_frame)
 
-            w_T_grasp = w_T_box.copy()
-            w_T_grasp.translation += w_T_box.linear @ np.array(offset)
+            w_T_grasp = w_T_box * box_T_grasp
+
+            print('grasp frame for ', frame, ': ', w_T_grasp)
 
             self.__grasp_poses[frame] = w_T_grasp
 

@@ -38,9 +38,13 @@ class Planner:
             self.robot = None
             print('RobotInterface not created')
 
+        
+        # define start and goal configurations
+        self.qstart = self._generate_start_pose()
+        self.qgoal = []  # set by the user
+
         # the initial state is homing (TBD: actual robot state)
-        qhome = self.model.getRobotState('home')
-        self.model.setJointPosition(qhome)
+        self.model.setJointPosition(self.qstart)
         self.model.update()
 
         # make validity check (static stability + planning scene collisions)
@@ -71,10 +75,10 @@ class Planner:
                                               tf_prefix='planner/')
 
         # links in contact
-        self.static_links = ['contact_1', 'contact_2', 'contact_3', 'contact_4']
+        self.static_links = [f'wheel_{i+1}' for i in range(4)]
 
         # moveable end effectors
-        self.dynamic_links = ['arm1_8', 'arm2_8']
+        self.dynamic_links = ['dagana_2_top_link']
 
         # create the goal sampler
         self.nspg = nspg.CentauroNSPG(self.model, self.dynamic_links, self.static_links, self.vc)
@@ -89,9 +93,7 @@ class Planner:
         self.qmin = qmin
         self.qmax = qmax
 
-        # define start and goal configurations
-        self.qstart = qhome
-        self.qgoal = []
+        
 
         # planner manifold
         self.constr = manifold.make_constraint(self.model, self.static_links)
@@ -100,10 +102,14 @@ class Planner:
         self.aruco.listen()
 
 
-    def generate_start_pose(self):
-        self.model.setJointPosition(self.qstart)
-        self.model.update()
-        self.start_viz.publishMarkers([])
+    def _generate_start_pose(self):
+        if self.robot is None:
+            self.qstart = self.model.getRobotState('home')
+        else:
+            self.robot.sense()
+            qref = self.robot.getPositionReference()
+            self.qstart = self.model.mapToEigen(self.robot.eigenToMap(qref))
+        return self.qstart
 
 
     def generate_goal_pose(self):
@@ -126,6 +132,8 @@ class Planner:
 
         if not success:
             raise Exception('unable to find a goal configuration!')
+        
+        self.qgoal = np.clip(self.qgoal, self.qmin, self.qmax)
 
 
 

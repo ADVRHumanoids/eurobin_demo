@@ -75,7 +75,7 @@
           <pose>0.00005 0 0 0 0 0</pose>
           <geometry>
             <box>
-              <size>0.0001 0.15 0.15</size>
+              <size>0.0001 0.10 0.10</size>
             </box>
           </geometry>
           <material>
@@ -91,7 +91,7 @@
           <pose>-0.00005 0 0 0 0 0</pose>
           <geometry>
             <box>
-              <size>0.0001 0.15 0.15</size>
+              <size>0.0001 0.10 0.10</size>
             </box>
           </geometry>
         </visual>
@@ -99,7 +99,7 @@
           <pose>0 0 0 0 0 0</pose>
           <geometry>
             <box>
-              <size>0.0001 0.15 0.15</size>
+              <size>0.0001 0.10 0.10</size>
             </box>
           </geometry>
         </collision>
@@ -108,7 +108,6 @@
       <joint name="box_to_marker" type="fixed">
         <parent>box</parent>
         <child>marker</child>
-
       </joint>
     </model>
   </xacro:macro>
