@@ -1,0 +1,24 @@
+solver_options:
+  regularization: 1e-4
+
+stack: [
+  ['ee']
+]
+
+constraints: [
+  jlim,
+  vlim,
+]
+
+ee:
+  name: ee
+  type: Cartesian 
+  distal_link: dagana_2_top_link
+  base_link: pelvis
+  lambda: 0.0
+
+jlim: 
+  type: JointLimits
+
+vlim:
+  type: VelocityLimits
