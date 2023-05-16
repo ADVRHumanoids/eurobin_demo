@@ -266,7 +266,7 @@ class Planner:
                                         'links': [f'contact_{i+1}' for i in range(4)],
                                         'stability_margin': 0.05}
 
-        vc_context = vc.ValidityCheckContext(yaml.dump(_planner_config), self.model)
+        vc_context = vc.ValidityCheckContext('ciao', self.model)
         return vc_context
 
 

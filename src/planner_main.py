@@ -17,7 +17,7 @@ roscpp.init('planner_node', [])
 model_cfg = get_xbot_config(prefix='xbotcore/')
 
 # get parameters
-planner_cfg_path = sys.argv[1]
+planner_cfg_path = '/home/centauro/eurobin_ws/ros_src/eurobin_grasp_box/config/planner_config.yaml'  #sys.argv[1]
 planner_cfg = yaml.safe_load(open(planner_cfg_path, 'r'))
 
 # construct planner class

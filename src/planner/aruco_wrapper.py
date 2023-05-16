@@ -48,8 +48,7 @@ class ArucoWrapper:
 
             # add to PlanningScene
             self.ps.addBox(frame, size, w_T_box)
-            print(f'added box in pos {w_center}')
-            
+            print(f'added box in pos {w_center}')            
 
         for frame, props in self.__grasp_dict.items():
             base_frame = props['base_frame']

@@ -42,7 +42,7 @@ diff_trans = t_f.translation - t_p.translation
 
 diff_trans_norm = diff_trans / np.linalg.norm(diff_trans)
 
-t_goal.translation += diff_trans - diff_trans_norm*1.0
+t_goal.translation += diff_trans - np.array([1.0, -0.07, 0.]), #diff_trans_norm*1.0
 
 req.goal.position.x = t_goal.translation[0]
 req.goal.position.y = t_goal.translation[1]
