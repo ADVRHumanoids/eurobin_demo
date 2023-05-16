@@ -62,17 +62,17 @@ class Planner:
         self.start_viz = visual_tools.RobotViz(self.model,
                                                '/centauro/start',
                                                color=[0, 0, 1, 0.5],
-                                               tf_prefix='planner/')
+                                               tf_prefix='')
 
         self.goal_viz = visual_tools.RobotViz(self.model,
                                               '/centauro/goal',
                                               color=[0, 1, 0, 0.5],
-                                              tf_prefix='planner/')
+                                              tf_prefix='')
         
         self.plan_viz = visual_tools.RobotViz(self.model,
                                               '/centauro/plan',
                                               color=[1, 1, 0.1, 0.5],
-                                              tf_prefix='planner/')
+                                              tf_prefix='')
 
         # links in contact
         self.static_links = [f'wheel_{i+1}' for i in range(4)]

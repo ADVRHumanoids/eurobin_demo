@@ -6,6 +6,9 @@ import rospkg
 from os.path import join
 import numpy as np
 import rospy
+import sys
+
+v_ref = float(sys.argv[1])
 
 rospy.init_node('reach_to_grasp_node')
 
@@ -31,16 +34,16 @@ ci = pyci.CartesianInterface.MakeInstance(
 
 tcp = ci.getTask('ee')
 
-vref_local = np.array([0.0, 0, -0.03, 0, 0, 0])
+vref_local = np.array([0.0, 0, v_ref, 0, 0, 0])
 
 rate = rospy.Rate(1./dt)
 
 while True:
     
-    T = model.getPose(tcp.getDistalLink())
+    T = model.getPose(tcp.getDistalLink(), tcp.getBaseLink())
     vref = np.zeros((6))
 
-    vref[:3] = T.linear.T @ vref_local[:3]
+    vref[:3] = T.linear @ vref_local[:3]
 
     tcp.setVelocityReference(vref)
     

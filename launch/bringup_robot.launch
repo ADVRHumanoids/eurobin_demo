@@ -7,27 +7,27 @@
         <arg name="camera" value="/D435_head_camera/color" />
         <arg name="image" value="image_raw" />
         <arg name="dictionary" value="0" />
-        <arg name="fiducial_len" value="0.12" />
+        <arg name="fiducial_len" value="0.08" />
         <arg name="do_pose_estimation" value="true" />
         <arg name="verbose" value="$(arg verbose)" />
     </include>
 
-    <include ns="aruco_base" file="$(find aruco_detect)/launch/aruco_detect.launch" pass_all_args="true">
+    <!-- <include ns="aruco_base" file="$(find aruco_detect)/launch/aruco_detect.launch" pass_all_args="true">
         <arg name="camera" value="/D435_camera/color" />
         <arg name="image" value="image_raw" />
         <arg name="dictionary" value="0" />
         <arg name="fiducial_len" value="0.12" />
         <arg name="do_pose_estimation" value="true" />
         <arg name="verbose" value="$(arg verbose)" />
-    </include>
+    </include> -->
 
     <node pkg="eurobin_grasp_box" ns="aruco_head" type="fiducial_marker_publisher.py"
         name="marker_pub_head" />
 
-    <node pkg="eurobin_grasp_box" ns="aruco_base" type="fiducial_marker_publisher.py"
-        name="marker_pub_base" />
+    <!-- <node pkg="eurobin_grasp_box" ns="aruco_base" type="fiducial_marker_publisher.py"
+        name="marker_pub_base" /> -->
 
-    <node pkg="tf" type="static_transform_publisher" name="world_connecter" args="0 0 0 0 0 0 planner/world pelvis 30"/>
+    <!--node pkg="tf" type="static_transform_publisher" name="world_connecter" args="0 0 0 0 0 0 planner/world pelvis 30"/-->
 
     <node if="$(arg gui)" pkg="rviz" type="rviz" name="rviz"
         args="-d $(find eurobin_grasp_box)/config/main.rviz" />
