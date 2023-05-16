@@ -5,6 +5,7 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
+        - /HeadCameraPoints1
         - /PlanningScene1/Scene Robot1
         - /NSPG1
       Splitter Ratio: 0.6205882430076599
@@ -55,18 +56,447 @@ Visualization Manager:
     - Alpha: 1
       Class: rviz/RobotModel
       Collision Enabled: false
-      Enabled: false
+      Enabled: true
       Links:
         All Links Enabled: true
+        D435_head_camera_accel_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        D435_head_camera_accel_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        D435_head_camera_bottom_screw_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        D435_head_camera_color_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        D435_head_camera_color_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        D435_head_camera_depth_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        D435_head_camera_depth_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        D435_head_camera_gyro_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        D435_head_camera_gyro_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        D435_head_camera_left_ir_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        D435_head_camera_left_ir_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        D435_head_camera_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        D435_head_camera_right_ir_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        D435_head_camera_right_ir_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        D435i_camera_accel_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        D435i_camera_accel_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        D435i_camera_bottom_screw_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        D435i_camera_color_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        D435i_camera_color_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        D435i_camera_depth_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        D435i_camera_depth_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        D435i_camera_gyro_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        D435i_camera_gyro_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        D435i_camera_left_ir_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        D435i_camera_left_ir_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        D435i_camera_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        D435i_camera_right_ir_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        D435i_camera_right_ir_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         Expand Joint Details: false
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
+        T265_camera_accel_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        T265_camera_accel_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        T265_camera_fisheye1_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        T265_camera_fisheye1_rgb_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        T265_camera_fisheye2_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        T265_camera_fisheye2_rgb_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        T265_camera_gyro_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        T265_camera_gyro_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        T265_camera_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        T265_camera_pose_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        ankle1_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        ankle1_2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        ankle1_3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        ankle1_4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        ankle2_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        ankle2_2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        ankle2_3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        ankle2_4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        arm1_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        arm1_2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        arm1_3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        arm1_4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        arm1_5:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        arm1_6:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        arm1_8:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        arm2_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        arm2_2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        arm2_3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        arm2_4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        arm2_5:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        arm2_6:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        arm2_8:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        ball1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        ball1_tip:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        contact_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        contact_2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        contact_3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        contact_4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        d435_head_motor:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        dagana_2_bottom_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        dagana_2_tcp:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        dagana_2_top_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        hip1_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        hip1_2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        hip1_3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        hip1_4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        hip2_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        hip2_2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        hip2_3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        hip2_4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        imu_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        knee_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        knee_2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        knee_3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        knee_4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        neck_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        pelvis:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        torso_2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        velodyne_calib:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        velodyne_calib_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        velodyne_motor:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        wheel_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        wheel_2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        wheel_3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        wheel_4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        world:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
       Name: RobotModel
       Robot Description: xbotcore/robot_description
       TF Prefix: ""
       Update Interval: 0
-      Value: false
+      Value: true
       Visual Enabled: true
     - Alpha: 1
       Autocompute Intensity Bounds: true
@@ -89,7 +519,7 @@ Visualization Manager:
       Queue Size: 10
       Selectable: true
       Size (Pixels): 3
-      Size (m): 0.009999999776482582
+      Size (m): 0.0010000000474974513
       Style: Flat Squares
       Topic: /D435_head_camera/depth/color/points
       Unreliable: false
@@ -615,8 +1045,7 @@ Visualization Manager:
       Marker Topic: /centauro/goal
       Name: GoalPose
       Namespaces:
-        collision: true
-        visual: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/MarkerArray
@@ -624,8 +1053,7 @@ Visualization Manager:
       Marker Topic: /centauro/plan
       Name: Plan
       Namespaces:
-        collision: true
-        visual: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/MarkerArray
@@ -633,8 +1061,7 @@ Visualization Manager:
       Marker Topic: /planner_node_cpp/nspg
       Name: NSPG
       Namespaces:
-        collision: true
-        visual: true
+        {}
       Queue Size: 100
       Value: true
     - Alpha: 1
@@ -697,7 +1124,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.676271677017212
+      Distance: 1.0937268733978271
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -713,9 +1140,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.579796552658081
+      Pitch: 0.8847963809967041
       Target Frame: <Fixed Frame>
-      Yaw: 5.126756191253662
+      Yaw: 4.6817498207092285
     Saved: ~
 Window Geometry:
   Displays:
@@ -737,5 +1164,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1920
-  X: 1920
-  Y: 0
+  X: 1520
+  Y: 27

@@ -1,0 +1,32 @@
+<launch>
+
+<node pkg="base_estimation"
+        type="base_estimation_node"
+        name="centauro_base_estimation"
+        output="screen">
+
+    <param name="ik_problem" textfile="$(find eurobin_grasp_box)/config/centauro_base_estimation.yaml"/>
+    <param name="rate" value="200.0"/>
+    <param name="contact_attach_thr" value="100.0"/>
+    <param name="contact_release_thr" value="50.0"/>
+    <param name="velocity_filter/omega" value="100.0"/>
+    <param name="contact_release_thr" value="50.0"/>
+    <param name="rolling_contacts/contact_1" value="wheel_1"/>
+    <param name="rolling_contacts/contact_2" value="wheel_2"/>
+    <param name="rolling_contacts/contact_3" value="wheel_3"/>
+    <param name="rolling_contacts/contact_4" value="wheel_4"/>
+    <param name="use_imu" value="false"/>
+    <param name="publish_tf" value="false"/>
+    <param name="tf_prefix" value=""/>
+
+    <param name="z_force_override/contact_1" value="1000"/>
+    <param name="z_force_override/contact_2" value="1000"/>
+    <param name="z_force_override/contact_3" value="1000"/>
+    <param name="z_force_override/contact_4" value="1000"/>
+
+    <remap from="/robot_description" to="/xbotcore/robot_description"/>
+    <remap from="/robot_description_semantic" to="/xbotcore/robot_description_semantic"/>
+
+</node>
+
+</launch>
