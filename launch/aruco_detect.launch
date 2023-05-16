@@ -8,5 +8,6 @@
     <arg name="verbose" value="false" />
 
     <include file="$(find aruco_detect)/launch/aruco_detect.launch" pass_all_args="true"/>
+    
 
 </launch>

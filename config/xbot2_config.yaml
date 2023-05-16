@@ -59,6 +59,20 @@ xbotcore_plugins:
             - left_arm
             - right_arm
           type: vector<string>
+
+    omnisteering:
+      type: omnisteering_controller_plugin
+      thread: nrt_main 
+      params:
+        wheel_names: 
+          value: [wheel_1, wheel_2, wheel_3, wheel_4]
+          type: vector<string>
+        wheel_radius: 
+          value: [0.124, 0.124, 0.124, 0.124]
+          type: vector<double>
+        max_steering_speed: 
+          value: 3.0
+          type: double
     
 
 

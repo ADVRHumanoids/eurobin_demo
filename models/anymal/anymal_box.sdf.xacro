@@ -105,8 +105,8 @@
                 </collision>
             </link>
 
-            <ignorelink name="marker">
-                <pose>${aruco_x} ${aruco_y} ${l_z + 0.001} 0 -1.57 0</pose>
+            <!-- <link name="marker_right">
+                <pose>${aruco_x} ${(-l_y - 0.001) / 2} ${l_z + 0.001} 0 0 -1.57</pose>
                 <inertial>
                     <pose>0 0 0 0 0 0</pose>
                     <mass>0.001</mass>
@@ -134,7 +134,6 @@
                         </script>
                     </material>
                 </visual>
-                <!-- Hide the marker from the back -->
                 <visual name="rear_visual">
                     <pose>-0.00005 0 0 0 0 0</pose>
                     <geometry>
@@ -151,12 +150,70 @@
                         </box>
                     </geometry>
                 </collision>
-            </ignorelink>
+            </link>
 
-            <joint name="box_to_marker" type="fixed">
+            <link name="marker_left">
+                <pose>${aruco_x} ${(l_y + 0.001) / 2} ${l_z + 0.001} 0 0 1.57</pose>
+                <inertial>
+                    <pose>0 0 0 0 0 0</pose>
+                    <mass>0.001</mass>
+                    <inertia>
+                        <ixx>3.7499999999999997e-06</ixx>
+                        <ixy>0.0</ixy>
+                        <ixz>0.0</ixz>
+                        <iyy>1.8750008333333333e-06</iyy>
+                        <iyz>0.0</iyz>
+                        <izz>1.8750008333333333e-06</izz>
+                    </inertia>
+                </inertial>
+                <visual name="front_visual">
+                    <pose>0.00005 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.0001 0.15 0.15</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <script>
+                            <uri>model://aruco_box/materials/scripts</uri>
+                            <uri>model://aruco_box/materials/textures</uri>
+                            <name>Marker${aruco_id}</name>
+                        </script>
+                    </material>
+                </visual>
+                <visual name="rear_visual">
+                    <pose>-0.00005 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.0001 0.15 0.15</size>
+                        </box>
+                    </geometry>
+                </visual>
+                <collision name="collision">
+                    <pose>0 0 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.0001 0.15 0.15</size>
+                        </box>
+                    </geometry>
+                </collision>
+            </link> -->
+
+            <joint name="anymal_to_box" type="fixed">
                 <parent>anymal</parent>
                 <child>box</child>
             </joint>
+
+            <!-- <joint name="anymal_to_marker_right" type="fixed">
+                <parent>anymal</parent>
+                <child>marker_right</child>
+            </joint>
+
+            <joint name="anymal_to_marker_left" type="fixed">
+                <parent>anymal</parent>
+                <child>marker_left</child>
+            </joint> -->
+            
         </model>
     </xacro:macro>
 
