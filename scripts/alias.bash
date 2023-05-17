@@ -33,5 +33,18 @@ CMD="aruco"
 NUM=$((NUM+1))
 alias eurobin-$NUM-$CMD="$SSH_VISION \"source eurobin_ws/setup.bash; mon launch eurobin_grasp_box bringup_robot.launch\""
 
+CMD="plan"
+NUM=$((NUM+1))
+alias eurobin-$NUM-$CMD="$SSH_VISION \"source eurobin_ws/setup.bash; rosrun eurobin_grasp_box planner_main.py\""
 
+CMD="grasp"
+NUM=$((NUM+1))
+alias eurobin-$NUM-$CMD="$SSH_VISION \"source eurobin_ws/setup.bash; rosrun eurobin_grasp_box grasp_the_box_adm_ctrl.py\""
 
+CMD="lift"
+NUM=$((NUM+1))
+alias eurobin-$NUM-$CMD="$SSH_VISION \"source eurobin_ws/setup.bash; rosrun eurobin_grasp_box lift_the_box.py\""
+
+CMD="release"
+NUM=$((NUM+1))
+alias eurobin-$NUM-$CMD="$SSH_VISION \"source eurobin_ws/setup.bash; rosrun eurobin_grasp_box release_the_box.py\""
