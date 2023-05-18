@@ -1,6 +1,6 @@
 
 SSH_EMBEDDED="ssh -tt embedded@10.24.4.100"
-SSH_VISION="ssh -tt centauro@10.24.4.101"
+SSH_VISION=""
 SSH_CONTROL="ssh -tt centauro@10.24.4.102"
 
 NUM=0
