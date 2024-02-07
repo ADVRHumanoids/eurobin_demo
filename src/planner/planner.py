@@ -78,7 +78,7 @@ class Planner:
         self.static_links = [f'wheel_{i+1}' for i in range(4)]
 
         # moveable end effectors
-        self.dynamic_links = ['dagana_2_top_link']
+        self.dynamic_links = ['arm1_8', 'dagana_2_top_link']
 
         # create the goal sampler
         self.nspg = nspg.CentauroNSPG(self.model, self.dynamic_links, self.static_links, self.vc)
@@ -260,13 +260,13 @@ class Planner:
 
     def _make_vc_context(self):
         _planner_config = dict()
-        _planner_config['state_validity_check'] = ['collisions', 'stability']
-        _planner_config['collisions'] = {'type': 'CollisionCheck', 'include_environment': 'true'}
+        _planner_config['state_validity_check'] = ['collisions']
+        _planner_config['collisions'] = {'type': 'CollisionCheck', 'include_environment': True}
         _planner_config['stability'] = {'type': 'ConvexHull',
                                         'links': [f'contact_{i+1}' for i in range(4)],
                                         'stability_margin': 0.05}
 
-        vc_context = vc.ValidityCheckContext('ciao', self.model)
+        vc_context = vc.ValidityCheckContext(yaml.safe_dump(_planner_config), self.model)
         return vc_context
 
 

@@ -17,7 +17,7 @@ roscpp.init('planner_node', [])
 model_cfg = get_xbot_config(prefix='xbotcore/')
 
 # get parameters
-planner_cfg_path = '/home/centauro/eurobin_ws/ros_src/eurobin_grasp_box/config/planner_config.yaml'  #sys.argv[1]
+planner_cfg_path = rospkg.RosPack().get_path('eurobin_grasp_box') + '/config/planner_config.yaml'  #sys.argv[1]
 planner_cfg = yaml.safe_load(open(planner_cfg_path, 'r'))
 
 # construct planner class
@@ -27,7 +27,7 @@ pln = planner.Planner(model_cfg.get_urdf(), model_cfg.get_srdf(), planner_cfg)
 pln.generate_goal_pose()
 
 # plan
-trj, error = pln.plan(timeout=10.0)
+trj, error = pln.plan(timeout=20.0)
 
 if trj is None:
     exit(1)
