@@ -47,7 +47,7 @@ force_threshold = 10  # 1 kg
 force_nsamples = 0
 force_nsamples_threshold = 10
 
-while False:
+while True:
 
     # force estimation
     robot.sense()
