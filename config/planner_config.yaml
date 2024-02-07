@@ -15,6 +15,7 @@ aruco_wrapper:
       base_frame: fiducial_1
       offset: 
         pos: [0.30, 0, 0.0]
+        # rot: [0, 0, -0.7, 0.7]
     arm2_8: 
       base_frame: fiducial_1
       offset: 
@@ -24,7 +25,7 @@ aruco_wrapper:
       offset: 
         # pos: [-0.40, 0, -0.0666]
         # rot: [0, 0.7071068, 0, 0.7071068]
-        pos: [0, 0.075, 0.4]
+        pos: [-0.4, 0.0, 0.15]
         rot: [0, 1, 0, 0]
 
 validity_check:
