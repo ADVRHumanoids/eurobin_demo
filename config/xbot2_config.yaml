@@ -1,5 +1,5 @@
 XBotInterface:
-  urdf: xacro $(rospack find centauro_urdf)/urdf/centauro.urdf.xacro end_effector_right:=dagana
+  urdf: xacro $(rospack find centauro_urdf)/urdf/centauro.urdf.xacro end_effector_right:=dagana_fixed end_effector_left:=dagana_fixed
   srdf_path: $(rospack find centauro_srdf)/srdf/centauro.srdf
 
 ModelInterface:
