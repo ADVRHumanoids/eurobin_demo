@@ -49,18 +49,19 @@ sdf_xacro_path = rospack.get_path('eurobin_grasp_box') + '/models/aruco_box/mode
 initial_pose = Pose()
 
 
-table_aruco_id = 1
+table_aruco_id = 0
 table_mass = 0.5
-table_size = (0.5, 1., 0.75)
+table_size = (.75, 1.0, .75)
 table_sdf_path = rospack.get_path('eurobin_grasp_box') + '/models/aruco_box/table.sdf'
-xacro_cmd = f'xacro {sdf_xacro_path} -o {table_sdf_path} aruco_id:={table_aruco_id} mass:={table_mass} l_x:={table_size[0]} l_y:={table_size[1]}  l_z:={table_size[2]}'
+xacro_cmd = f'xacro {sdf_xacro_path} -o {table_sdf_path} aruco_id:={table_aruco_id} mass:={table_mass} l_x:={table_size[0]} l_y:={table_size[1]}  l_z:={table_size[2]}  aruco_x:={0.20}'
 subprocess.run(xacro_cmd, shell=True)
 
 
 # define spawn pose and spawn aruco box
+initial_pose.orientation.x = 0
 initial_pose.orientation.w = 1
 initial_pose.orientation.z = 0
-initial_pose.orientation.y = 0
+initial_pose.orientation.y = -1
 initial_pose.position.x = 2.2
 initial_pose.position.z = 0.4
 
@@ -85,10 +86,7 @@ subprocess.run(xacro_cmd, shell=True)
 
 
 # define spawn pose and spawn aruco box
-initial_pose.orientation.w = 0.707
-initial_pose.orientation.z = 0
-initial_pose.orientation.y = -0.707
-initial_pose.position.x = 2.3
+initial_pose.position.x = 2.0
 initial_pose.position.z = 1.5
 
 res = spawn_model_client(
