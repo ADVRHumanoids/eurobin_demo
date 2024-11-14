@@ -7,6 +7,7 @@
         <arg name="realsense" value="true" />
         <arg name="end_effector_right" value="dagana_fixed" />
         <arg name="end_effector_left" value="dagana_fixed" />
+        <arg name="battery" value="true" />
     </include>
     
     <group ns="aruco_head">
@@ -32,6 +33,8 @@
             <arg name="verbose" value="$(arg verbose)" />
         </include>
     </group>
+
+    <include file="$(find base_estimation)/launch/centauro_base_estimation.launch"/>
 
     <node pkg="eurobin_grasp_box" type="xbot2.bash" name="xbot2" />
 
